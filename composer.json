@@ -24,6 +24,6 @@
             "url": "https://github.com/AzozzALFiras/aapanel-api"
         }
     ],
-    "minimum-stability": "stable",
+   "minimum-stability": "stable",
     "prefer-stable": true
 }
