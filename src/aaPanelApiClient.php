@@ -1,5 +1,7 @@
 <?php
 
+namespace AzozzALFiras\AAPanelAPI;
+
 /**
  * Class aaPanelApiClient
  *
