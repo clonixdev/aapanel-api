@@ -525,4 +525,56 @@ class aaPanelApiClient
         return json_decode($result, true);
     }
 
+
+
+    /**
+     * Delete Site
+     *
+     * @return array Response from the API
+     */
+    public function deleteSite($domain,$id)
+    {
+        $url = $this->baseUrl . '/site?action=DeleteSite';
+
+        $requestData = $this->generateRequestData();
+
+        $jsonData = [
+            'domain' => $domain,
+            'domainlist' => [],
+            'count' => 0,
+        ];
+
+        $requestData['webname'] = json_encode($jsonData);
+        $requestData['ftp'] = "1";
+        $requestData['database'] = "1";
+        $requestData['path'] = "1";
+        $requestData['id'] = $id;
+
+        $result = $this->httpPostWithCookie($url, $requestData);
+
+        return json_decode($result, true);
+    }
+
+    /**
+     * Site List
+     *
+     * @return array Response from the API
+     */
+    public function fetchSites($limit, $page, $search = null)
+    {
+        $url = $this->baseUrl . '/data?action=getData';
+
+        $requestData = $this->generateRequestData();
+        $requestData['table'] = 'sites';
+        $requestData['limit'] = $limit;
+        $requestData['p'] = $page;
+        $requestData['search'] = $search;
+        $requestData['type'] = '-1';
+
+        $result = $this->httpPostWithCookie($url, $requestData);
+
+        return json_decode($result, true);
+    }
+
+
 }
