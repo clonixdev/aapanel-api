@@ -2,6 +2,8 @@
 
 namespace AzozzALFiras\AAPanelAPI;
 
+use CURLFile;
+
 /**
  * Class aaPanelApiClient
  *
@@ -206,11 +208,16 @@ class aaPanelApiClient
      *
      * @return array List of FTP accounts
      */
-    public function fetchFtpAccounts()
+    public function fetchFtpAccounts($limit, $page, $search = null)
     {
-        $url = $this->baseUrl . '/ftp?action=GetFtpList';
+        $url = $this->baseUrl . '/data?action=getData';
 
         $requestData = $this->generateRequestData();
+        $requestData['table'] = 'ftps';
+        $requestData['limit'] = $limit;
+        $requestData['p'] = $page;
+        $requestData['search'] = $search;
+        $requestData['type'] = '-1';
 
         $result = $this->httpPostWithCookie($url, $requestData);
 
@@ -224,13 +231,16 @@ class aaPanelApiClient
      * @param string $password FTP password
      * @return array Response from the API
      */
-    public function addFtpAccount($username, $password)
+    public function addFtpAccount($username, $password,$path,$ps = null)
     {
-        $url = $this->baseUrl . '/ftp?action=AddFtp';
+        $url = $this->baseUrl . '/ftp?action=AddUser';
 
         $requestData = $this->generateRequestData();
-        $requestData['username'] = $username;
-        $requestData['password'] = $password;
+        $requestData['ftp_username'] = $username;
+        $requestData['ftp_password'] = $password;
+        $requestData['path'] = $path;
+        if(!is_null($ps))
+            $requestData['ps'] = $ps;
 
         $result = $this->httpPostWithCookie($url, $requestData);
 
@@ -243,12 +253,13 @@ class aaPanelApiClient
      * @param string $username FTP username
      * @return array Response from the API
      */
-    public function deleteFtpAccount($username)
+    public function deleteFtpAccount($username,$id)
     {
-        $url = $this->baseUrl . '/ftp?action=DelFtp';
+        $url = $this->baseUrl . '/ftp?action=DeleteUser';
 
         $requestData = $this->generateRequestData();
         $requestData['username'] = $username;
+        $requestData['id'] = $id;
 
         $result = $this->httpPostWithCookie($url, $requestData);
 
@@ -538,13 +549,7 @@ class aaPanelApiClient
 
         $requestData = $this->generateRequestData();
 
-        $jsonData = [
-            'domain' => $domain,
-            'domainlist' => [],
-            'count' => 0,
-        ];
-
-        $requestData['webname'] = json_encode($jsonData);
+        $requestData['webname'] = $domain;
         $requestData['ftp'] = "1";
         $requestData['database'] = "1";
         $requestData['path'] = "1";
@@ -575,6 +580,83 @@ class aaPanelApiClient
 
         return json_decode($result, true);
     }
+
+    /**
+     * Fetch Dir
+     *
+     * @return array Response from the API
+     */
+    public function fetchDirectory($path, $page, $showRow = 100)
+    {
+        $url = $this->baseUrl . '/files?action=GetDir';
+
+        $requestData = $this->generateRequestData();
+        $requestData['path'] = $path;
+        $requestData['p'] = $page;
+        $requestData['showRow'] =  $showRow ;
+        $requestData['is_operating'] =  true;
+
+        $result = $this->httpPostWithCookie($url, $requestData);
+
+        return json_decode($result, true);
+    }
+
+
+    /**
+     * Download Remote File
+     *
+     * @return array Response from the API
+     */
+    public function downloadFile($url,$path, $filename)
+    {
+        $url = $this->baseUrl . '/files?action=DownloadFile';
+
+        $requestData = $this->generateRequestData();
+        $requestData['url'] = $url;
+        $requestData['path'] = $path;
+        $requestData['filename'] = $filename;
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+
+    /**
+     * Retrive File Content
+     *
+     * @return array Response from the API
+     */
+    public function getFileBody($path)
+    {
+        $url = $this->baseUrl . '/files?action=GetFileBody';
+
+        $requestData = $this->generateRequestData();
+        $requestData['path'] = $path;
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+    /**
+     * Upload File
+     *
+     * @return array Response from the API
+     */
+    public function uploadFile($localPath,$path, $filename)
+    {
+        $url = $this->baseUrl . '/files?action=DownloadFile';
+
+        $filesize = filesize($localPath);
+
+        $requestData = $this->generateRequestData();
+        $requestData['f_path'] = $path;
+        $requestData['f_name'] = $filename;
+        $requestData['f_size'] = $filesize;
+        $requestData['f_start'] = 0;
+        $requestData['blob'] = new CURLFile($localPath, mime_content_type($localPath), $filename);
+
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
 
 
 }
