@@ -641,7 +641,7 @@ class aaPanelApiClient
      */
     public function uploadFile($localPath,$path, $filename)
     {
-        $url = $this->baseUrl . '/files?action=DownloadFile';
+        $url = $this->baseUrl . '/files?action=upload';
 
         $filesize = filesize($localPath);
 
