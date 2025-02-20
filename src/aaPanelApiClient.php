@@ -231,7 +231,7 @@ class aaPanelApiClient
      * @param string $password FTP password
      * @return array Response from the API
      */
-    public function addFtpAccount($username, $password,$path,$ps = null)
+    public function addFtpAccount($username, $password,$path,$ps)
     {
         $url = $this->baseUrl . '/ftp?action=AddUser';
 
@@ -239,8 +239,7 @@ class aaPanelApiClient
         $requestData['ftp_username'] = $username;
         $requestData['ftp_password'] = $password;
         $requestData['path'] = $path;
-        if(!is_null($ps))
-            $requestData['ps'] = $ps;
+        $requestData['ps'] = $ps;
 
         $result = $this->httpPostWithCookie($url, $requestData);
 
@@ -543,7 +542,7 @@ class aaPanelApiClient
      *
      * @return array Response from the API
      */
-    public function deleteSite($domain,$id)
+    public function deleteSite($site_id,$domain)
     {
         $url = $this->baseUrl . '/site?action=DeleteSite';
 
@@ -553,7 +552,7 @@ class aaPanelApiClient
         $requestData['ftp'] = "1";
         $requestData['database'] = "1";
         $requestData['path'] = "1";
-        $requestData['id'] = $id;
+        $requestData['id'] = $site_id;
 
         $result = $this->httpPostWithCookie($url, $requestData);
 
@@ -607,12 +606,12 @@ class aaPanelApiClient
      *
      * @return array Response from the API
      */
-    public function downloadFile($url,$path, $filename)
+    public function downloadFile($remoteUrl,$path, $filename)
     {
         $url = $this->baseUrl . '/files?action=DownloadFile';
 
         $requestData = $this->generateRequestData();
-        $requestData['url'] = $url;
+        $requestData['url'] = $remoteUrl;
         $requestData['path'] = $path;
         $requestData['filename'] = $filename;
         $result = $this->httpPostWithCookie($url, $requestData);
