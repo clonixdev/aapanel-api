@@ -658,6 +658,35 @@ class aaPanelApiClient
 
 
     /**
+     * Create File
+     *
+     * @return array Response from the API
+     */
+    public function createFile($path)
+    {
+        $url = $this->baseUrl . '/files?action=CreateFile';
+        $requestData = $this->generateRequestData();
+        $requestData['path'] = $path;
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+    /**
+     * Delete File
+     *
+     * @return array Response from the API
+     */
+    public function deleteFile($path)
+    {
+        $url = $this->baseUrl . '/files?action=DeleteFile';
+        $requestData = $this->generateRequestData();
+        $requestData['path'] = $path;
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+
+    /**
      * Get Site Run Path
      *
      * @return array Response from the API
