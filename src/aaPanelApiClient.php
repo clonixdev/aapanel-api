@@ -657,5 +657,37 @@ class aaPanelApiClient
     }
 
 
+    /**
+     * Get Site Run Path
+     *
+     * @return array Response from the API
+     */
+    public function getSiteRunPath($site_id)
+    {
+        $url = $this->baseUrl . '/data?action=getKey';
+        $requestData = $this->generateRequestData();
+        $requestData['id'] = $site_id;
+        $requestData['key'] = 'path';
+        $requestData['table'] = 'sites';
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+    /**
+     * Set Site Run Path
+     *
+     * @return array Response from the API
+     */
+    public function setSiteRunPath($site_id,$run_path)
+    {
+        $url = $this->baseUrl . '/site?action=SetSiteRunPath';
+        $requestData = $this->generateRequestData();
+        $requestData['id'] = $site_id;
+        $requestData['runPath'] = $run_path;
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+
 
 }
