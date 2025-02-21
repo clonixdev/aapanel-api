@@ -726,7 +726,8 @@ class aaPanelApiClient
      */
     public function addDatabase($db_name,$db_user,$db_password,$ps)
     {
-        $url = $this->baseUrl . '/site?action=addDatabase';
+
+        $url = $this->baseUrl . '/database?action=AddDatabase';
         $requestData = $this->generateRequestData();
         $requestData['sid'] = 0;
         $requestData['name'] = $db_name;
@@ -751,7 +752,7 @@ class aaPanelApiClient
      */
     public function deleteDatabase($db_id,$db_name)
     {
-        $url = $this->baseUrl . '/site?action=DeleteDatabase';
+        $url = $this->baseUrl . '/database?action=DeleteDatabase';
         $requestData = $this->generateRequestData();
         $requestData['id'] = $db_id;
         $requestData['name'] = $db_name;
