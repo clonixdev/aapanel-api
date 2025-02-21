@@ -719,4 +719,45 @@ class aaPanelApiClient
 
 
 
+    /**
+     * Add Database
+     *
+     * @return array Response from the API
+     */
+    public function addDatabase($db_name,$db_user,$db_password,$ps)
+    {
+        $url = $this->baseUrl . '/site?action=addDatabase';
+        $requestData = $this->generateRequestData();
+        $requestData['sid'] = 0;
+        $requestData['name'] = $db_name;
+        $requestData['codeing'] = 'utf8';
+        $requestData['db_user'] = $db_user;
+        $requestData['password'] = $db_password;
+        $requestData['dataAccess'] = '127.0.0.1';
+        $requestData['address'] = '127.0.0.1';
+        $requestData['active'] = 'false';
+        $requestData['ssl'] = null;
+        $requestData['ps'] = $ps;
+        $requestData['dtype'] = 'MySQL';
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+
+    /**
+     * Delete Database
+     *
+     * @return array Response from the API
+     */
+    public function deleteDatabase($db_id,$db_name)
+    {
+        $url = $this->baseUrl . '/site?action=DeleteDatabase';
+        $requestData = $this->generateRequestData();
+        $requestData['id'] = $db_id;
+        $requestData['name'] = $db_name;
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+
 }
