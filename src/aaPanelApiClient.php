@@ -333,6 +333,28 @@ class aaPanelApiClient
     }
 
     /**
+     * ZIP archive 
+     *
+     * @param string $sourceFile Path to the ZIP file
+     * @param string $destination Path where the contents will be extracted
+     * @param string|null $password Password for the ZIP file (optional)
+     * @return array Response from the API
+     */
+    public function zipFile($sourceFile, $destination, $z_type = 'zip')
+    {
+        $url = $this->baseUrl . '/files?action=Zip';
+
+        $requestData = $this->generateRequestData();
+        $requestData['sfile'] = basename($sourceFile);
+        $requestData['dfile'] = $destination;
+        $requestData['type'] = $z_type;
+        $requestData['path'] = dirname($sourceFile);
+        $result = $this->httpPostWithCookie($url, $requestData);
+
+        return json_decode($result, true);
+    }
+
+    /**
      * Apply SSL certificate to a domain.
      *
      * @param string $domain Domain name
@@ -759,6 +781,66 @@ class aaPanelApiClient
         $result = $this->httpPostWithCookie($url, $requestData);
         return json_decode($result, true);
     }
+
+
+
+
+    /**
+     * Create Custom Script
+     *
+     * @return array Response from the API
+     */
+    public function createCustomScript($name,$script,$return_type = "string",$is_args = "0",$args_title ="",$args_ps ="")
+    {
+        $url = $this->baseUrl . '/v2/crontab/script/create_script';
+        $requestData = $this->generateRequestData();
+
+        $requestData['name'] = $name;
+        $requestData['return_type'] = $return_type;
+        $requestData['is_args'] = $is_args;
+        $requestData['ps'] = "";
+        $requestData['script'] = $script;
+        $requestData['type_id'] = "7";
+        $requestData['args_title'] = $args_title;
+        $requestData['args_ps'] = $args_ps;
+
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+
+    /**
+     * Get Custom Script List
+     *
+     * @return array Response from the API
+     */
+    public function fetchCustomScripts($p = 1)
+    {
+        $url = $this->baseUrl . '/v2/crontab/script/get_script_list';
+        $requestData = $this->generateRequestData();
+        $requestData['p'] = $p;
+        $requestData['rows'] = 50;
+        $requestData['type_id'] = "7";
+        $requestData['search'] = "";
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
+    /**
+     * Execute script
+     *
+     * @return array Response from the API
+     */
+    public function runScript($script_id,$args = "")
+    {
+        $url = $this->baseUrl . '/v2/crontab/script/test_script';
+        $requestData = $this->generateRequestData();
+        $requestData['script_id'] = $script_id;
+        $requestData['args'] = $args;
+        $result = $this->httpPostWithCookie($url, $requestData);
+        return json_decode($result, true);
+    }
+
 
 
 }
